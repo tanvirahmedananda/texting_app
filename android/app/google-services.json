@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1086791702731",
+    "project_id": "texting-app-4af2e",
+    "storage_bucket": "texting-app-4af2e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086791702731:android:d12427d2e4ef28f584234e",
+        "android_client_info": {
+          "package_name": "com.example.texting_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXvhvuT3m-fmi9bdIXuFkn8FeYLtGzaT4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
