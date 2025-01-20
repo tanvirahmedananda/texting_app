@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:texting_app/model/text_model.dart';
 import 'package:texting_app/model/user_model.dart';
-import 'package:texting_app/models/user_list_model.dart';
 
 import '../model/message_model.dart';
 
-const String collectionUserList = 'TestList';
+const String collectionUserList = 'UserList';
 const String collectionChatList = 'ChatList';
 const String collectionUserData = 'UserData';
 const String collectionChatRoom = 'ChatRoomMassages';
@@ -199,7 +198,7 @@ class DbHelper {
 
   ///SEND MESSAGE
   static Future<void> sendMessage(String senderPhone, List<dynamic> reciverPhone,
-      TextModel textModel, String messageId) {
+      TextModel textModel) {
     if(reciverPhone.length == 1){
       _db
           .collection(collectionUserList)
@@ -207,11 +206,22 @@ class DbHelper {
           .collection(collectionChatList)
           .doc(senderPhone)
           .collection(collectionChatRoom)
-          .doc(messageId)
+          .doc()
+          .set(textModel.toMap());
+      return _db
+          .collection(collectionUserList)
+          .doc(senderPhone)
+          .collection(collectionChatList)
+          .doc(reciverPhone.first)
+          .collection(collectionChatRoom)
+          .doc()
           .set(textModel.toMap());
     }else{
-      for(int i = 1; i < reciverPhone.length; i++){
+      for(int i = 0; i < reciverPhone.length; i++){
         print("Lenght of receiver phone : ${reciverPhone.length}");
+        if(reciverPhone[i]==reciverPhone.first || reciverPhone[i]==senderPhone){
+          continue;
+        }
         print(reciverPhone[i]);
         _db
             .collection(collectionUserList)
@@ -219,20 +229,85 @@ class DbHelper {
             .collection(collectionChatList)
             .doc(reciverPhone.first)
             .collection(collectionChatRoom)
-            .doc(messageId)
+            .doc()
             .set(textModel.toMap());
       }
+      return _db
+          .collection(collectionUserList)
+          .doc(senderPhone)
+          .collection(collectionChatList)
+          .doc(reciverPhone.first)
+          .collection(collectionChatRoom)
+          .doc()
+          .set(textModel.toMap());
     }
-    return _db
-        .collection(collectionUserList)
-        .doc(senderPhone)
-        .collection(collectionChatList)
-        .doc(reciverPhone.first)
-        .collection(collectionChatRoom)
-        .doc(messageId)
-        .set(textModel.toMap());
-  }
 
+  }
+  /*static Future<void> sendMessage(
+      String senderPhone,
+      List<dynamic> receiverPhone,
+      TextModel textModel,
+      String messageId,
+      ) async {
+    try {
+      final batch = _db.batch(); // Use a batch for atomic writes
+
+      if (receiverPhone.length == 1) {
+        // Ensure the parent document exists
+        DocumentReference receiverDoc = _db
+            .collection(collectionUserList)
+            .doc(receiverPhone.first)
+            .collection(collectionChatList)
+            .doc(senderPhone);
+
+        batch.set(receiverDoc, {'exists': true}, SetOptions(merge: true)); // Ensure parent exists
+        batch.set(
+          receiverDoc.collection(collectionChatRoom).doc(messageId),
+          textModel.toMap(),
+        );
+      } else {
+        for (int i = 1; i < receiverPhone.length; i++) {
+          print("Length of receiver phone : ${receiverPhone.length}");
+          print(receiverPhone[i]);
+
+          // Ensure the parent document exists
+          DocumentReference receiverDoc = _db
+              .collection(collectionUserList)
+              .doc(receiverPhone[i])
+              .collection(collectionChatList)
+              .doc(receiverPhone.first);
+
+          batch.set(receiverDoc, {'exists': true}, SetOptions(merge: true)); // Ensure parent exists
+          batch.set(
+            receiverDoc.collection(collectionChatRoom).doc(messageId),
+            textModel.toMap(),
+          );
+        }
+      }
+
+      // Ensure the sender's parent document exists
+      DocumentReference senderDoc = _db
+          .collection(collectionUserList)
+          .doc(senderPhone)
+          .collection(collectionChatList)
+          .doc(receiverPhone.first);
+
+      batch.set(senderDoc, {'exists': true}, SetOptions(merge: true)); // Ensure parent exists
+      batch.set(
+        senderDoc.collection(collectionChatRoom).doc(messageId),
+        textModel.toMap(),
+      );
+
+      // Commit the batch
+      await batch.commit();
+
+      print("Message sent successfully.");
+    } catch (e) {
+      print("Error sending message: $e");
+    }
+  }*/
+
+/*
   static Future<void> addUserData(
       UserListModel userListModel, String userId) async {
     // Reference to the user_list collection
@@ -340,5 +415,5 @@ class DbHelper {
         .collection('chat_room_messages')
         .doc('xrRyibhNM3tcdvI8FiBn')
         .snapshots();
-  }
+  }*/
 }

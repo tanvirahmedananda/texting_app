@@ -8,6 +8,8 @@ import 'package:texting_app/widget/poppins_text.dart';
 import 'package:texting_app/widget/reciver_text_box.dart';
 import 'package:texting_app/widget/user_text_box.dart';
 
+import '../widget/common_text_form_field.dart';
+
 class ChatPage extends StatefulWidget {
   static const String routeName = '/chat_page';
   final int? index;
@@ -19,11 +21,14 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  var phoneController = TextEditingController();
+
   @override
   void initState() {
     // Provider.of<ChatProvider>(context, listen: false).getCurrentUserData();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     var messageController = TextEditingController();
@@ -31,9 +36,10 @@ class _ChatPageState extends State<ChatPage> {
     print('//////////////4///////////');
     print(Provider.of<ChatProvider>(context, listen: false)
         .randomRecivers[widget.index!]
-        .phoneList?.first);
-    print(Provider.of<ChatProvider>(context, listen: false)
-        .currentUserUsername);
+        .phoneList
+        ?.first);
+    print(
+        Provider.of<ChatProvider>(context, listen: false).currentUserUsername);
     return SafeArea(
       child: Consumer<ChatProvider>(
           builder: (child, chatProv, _) => Scaffold(
@@ -65,7 +71,89 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                   actions: [
-                    IconButton(onPressed: ()=>chatProv.addGroupMember(chatProv.randomRecivers[widget.index!].username, "cc", chatProv.randomReceiversChat[widget.index!]["receiverChatList"]), icon: Icon(Icons.add)),
+                    if(chatProv.randomRecivers[widget.index!].phoneList!.length>1)IconButton(
+                      onPressed: () => showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Container(
+                                height: 200,
+                                width: 300,
+                                child: Column(
+                                  children: [
+                                    ExpansionTile(
+                                      title: Container(child: Text('Add chat')),
+                                      children: [
+                                        Container(
+                                          child: Column(
+                                            children: [
+                                              CommonTextFormField(
+                                                controller: phoneController,
+                                                hintText: 'contact no.',
+                                                isPassword: false,
+                                                inputType: TextInputType.phone,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Provider.of<ChatProvider>(
+                                                              context,
+                                                              listen: false)
+                                                          .addGroupMember(
+                                                              chatProv
+                                                                  .randomRecivers[
+                                                                      widget
+                                                                          .index!]
+                                                                  .username,
+                                                              phoneController
+                                                                  .text,
+                                                              chatProv.randomReceiversChat[
+                                                                      widget
+                                                                          .index!]
+                                                                  [
+                                                                  "receiverChatList"]);
+                                                      phoneController.clear();
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                        vertical: mQHeight(
+                                                            10, context),
+                                                        horizontal: mQWidth(
+                                                            20, context),
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                          color: themeBlue,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      100)),
+                                                      child: PoppinsText(
+                                                          text: "Add Member",
+                                                          fontSize: 15,
+                                                          color: Colors.white,
+                                                          weight:
+                                                              FontWeight.w500),
+                                                    ),
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                      icon: Icon(Icons.add),
+                    ),
                     IconButton(
                         onPressed: () => Navigator.pushNamed(
                             context, ViewContactPage.routeName),
@@ -83,38 +171,42 @@ class _ChatPageState extends State<ChatPage> {
                       color: Colors.red,
                       child: ListView.builder(
                           reverse: true,
-                          itemCount:
-                              chatProv.randomReceiversChat[widget.index!]["receiverChatList"].length,
+                          itemCount: chatProv
+                              .randomReceiversChat[widget.index!]
+                                  ["receiverChatList"]
+                              .length,
                           itemBuilder: (context, conindex) {
-                            if (chatProv
-                                    .randomRecivers[widget.index!].username ==
+                            if (chatProv.currentUserUsername ==
                                 chatProv
-                                    .randomReceiversChat[widget.index!]["receiverChatList"][conindex]
+                                    .randomReceiversChat[widget.index!]
+                                        ["receiverChatList"][conindex]
                                     .username) {
-                              return ReciverTextBox(
+                              return UserTextBox(
                                 text: chatProv
-                                    .randomReceiversChat[widget.index!]["receiverChatList"][conindex]
+                                    .randomReceiversChat[widget.index!]
+                                        ["receiverChatList"][conindex]
                                     .text,
                                 time: chatProv
-                                        .randomReceiversChat[widget.index!]["receiverChatList"]
-                                            [conindex]
+                                        .randomReceiversChat[widget.index!]
+                                            ["receiverChatList"][conindex]
                                         .time ??
-                                    '',
-                                image: chatProv
-                                        .randomReceiversChat[widget.index!]["receiverChatList"]
-                                            [conindex]
-                                        .image ??
                                     '',
                               );
                             } else {
-                              return UserTextBox(
+                              return ReciverTextBox(
                                 text: chatProv
-                                    .randomReceiversChat[widget.index!]["receiverChatList"][conindex]
+                                    .randomReceiversChat[widget.index!]
+                                        ["receiverChatList"][conindex]
                                     .text,
                                 time: chatProv
-                                        .randomReceiversChat[widget.index!]["receiverChatList"]
-                                            [conindex]
+                                        .randomReceiversChat[widget.index!]
+                                            ["receiverChatList"][conindex]
                                         .time ??
+                                    '',
+                                image: chatProv
+                                        .randomReceiversChat[widget.index!]
+                                            ["receiverChatList"][conindex]
+                                        .image ??
                                     '',
                               );
                             }
@@ -153,11 +245,13 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                           IconButton(
                               onPressed: () {
-                                print("random receiver phone: ${chatProv.randomRecivers[widget.index!].phoneList}");
-                                chatProv.sendMessage(widget.index!,
+                                print(
+                                    "random receiver phone: ${chatProv.randomRecivers[widget.index!].phoneList}");
+                                chatProv.sendMessage(
+                                    widget.index!,
                                     chatProv.currentUserPhone,
-                                    chatProv
-                                        .randomRecivers[widget.index!].phoneList!,
+                                    chatProv.randomRecivers[widget.index!]
+                                        .phoneList!,
                                     TextModel(
                                       username: chatProv.currentUserUsername,
                                       text: messageController.text,
