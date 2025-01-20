@@ -4,7 +4,6 @@ import 'package:texting_app/db/db_helper.dart';
 import 'package:texting_app/model/message_model.dart';
 import 'package:texting_app/model/text_model.dart';
 import 'package:texting_app/model/user_model.dart';
-import 'package:texting_app/models/user_list_model.dart';
 
 class ChatProvider extends ChangeNotifier {
   List<UserModel> users = [];
@@ -99,7 +98,7 @@ class ChatProvider extends ChangeNotifier {
   createGroup(String groupName){
     UserModel groupModel = UserModel(username: groupName, phoneList: [groupName, currentUserPhone], email: '', );
     DbHelper.createGroup(groupModel,TextModel(
-      username: currentUserPhone,
+      username: currentUserUsername,
       image: null,
       text: "hey~~",
       time: null,
@@ -171,9 +170,9 @@ class ChatProvider extends ChangeNotifier {
 
   ///SEND MESSAGE
   sendMessage(int index, String senderPhone, List<dynamic> reciverPhone,
-      TextModel textModel) =>
-      DbHelper.sendMessage(senderPhone, reciverPhone, textModel,
-          "MessageNo.${(randomReceiversChat[index]["receiverChatList"].length + 1)}");
+      TextModel textModel) {
+    DbHelper.sendMessage(senderPhone, reciverPhone, textModel);
+  }
 
   resetData() {
     users.clear();
@@ -184,7 +183,7 @@ class ChatProvider extends ChangeNotifier {
     currentUserImage = '';
     notifyListeners();
   }
-
+/*
   ///Get and Fetch Hierarchical data
   Future<void> addData() async {
     final userListModel = UserListModel(
@@ -263,7 +262,7 @@ class ChatProvider extends ChangeNotifier {
     } catch (e) {
       print('Error fetching data: $e');
     }
-  }
+  }*/
 }
 
 
