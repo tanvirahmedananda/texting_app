@@ -6,7 +6,7 @@ const String keyImage = 'image';
 class TextModel {
   final String username;
   final String? text;
-  final String? time;
+  final DateTime? time;
   final String? image;
 
   TextModel({

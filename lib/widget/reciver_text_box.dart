@@ -5,7 +5,7 @@ import 'package:texting_app/widget/poppins_text.dart';
 
 class ReciverTextBox extends StatelessWidget {
   final String? text;
-  final String? time;
+  final DateTime? time;
   final String? image;
   const ReciverTextBox({
     super.key,
@@ -47,7 +47,7 @@ class ReciverTextBox extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        PoppinsText(text: time!, fontSize: 10, color: green, weight: FontWeight.w300),
+                        PoppinsText(text: "${time?.hour}:${time?.minute}", fontSize: 10, color: green, weight: FontWeight.w300),
                       ],
                     )
                   ],

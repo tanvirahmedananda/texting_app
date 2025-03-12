@@ -10,7 +10,7 @@ class MessageModel {
   final String? email;
   final String? phone;
   final String? text;
-  final String? time;
+  final DateTime? time;
   final String? image;
 
   MessageModel({

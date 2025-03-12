@@ -245,6 +245,8 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                           IconButton(
                               onPressed: () {
+                                DateTime currentTime = DateTime.now();
+                                print(">>>>>>>>>>>>>>>>CURRENT TIME: ${currentTime.hour} : ${currentTime.minute} <<<<<<<<<<<<<<<<<<<");
                                 print(
                                     "random receiver phone: ${chatProv.randomRecivers[widget.index!].phoneList}");
                                 chatProv.sendMessage(
@@ -256,7 +258,7 @@ class _ChatPageState extends State<ChatPage> {
                                       username: chatProv.currentUserUsername,
                                       text: messageController.text,
                                       image: chatProv.currentUserImage,
-                                      time: null,
+                                      time: currentTime,
                                     ));
                                 messageController.clear();
                               },
